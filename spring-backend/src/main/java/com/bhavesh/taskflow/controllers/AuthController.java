@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bhavesh.taskflow.dtos.LoginRequest;
-import com.bhavesh.taskflow.dtos.SignupRequest;
+import com.bhavesh.taskflow.dtos.LoginRequestDTO;
+import com.bhavesh.taskflow.dtos.SignupRequestDTO;
 import com.bhavesh.taskflow.security.JwtUtility;
 import com.bhavesh.taskflow.services.UserService;
 
@@ -27,7 +27,7 @@ public class AuthController {
     private JwtUtility jwtService;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequest signupRequest) {
+    public String signup(@RequestBody SignupRequestDTO signupRequest) {
         if(userService.signupUser(signupRequest)) {
             return "signup-success";
         } else {
@@ -37,7 +37,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public String login(@RequestBody LoginRequestDTO loginRequest) {
         try {
             System.out.println("Attempting login for: " + loginRequest.getEmail());
             authenticationManager.authenticate(

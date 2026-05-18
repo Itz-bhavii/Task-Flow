@@ -1,10 +1,12 @@
 package com.bhavesh.taskflow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.bhavesh.taskflow.dtos.SignupRequest;
+import com.bhavesh.taskflow.dtos.SignupRequestDTO;
 import com.bhavesh.taskflow.models.User;
 import com.bhavesh.taskflow.repository.UserRepository;
 
@@ -51,7 +53,13 @@ public class UserService {
         return true;
     }
     
-    public boolean signupUser(SignupRequest signupRequest) {
+    public boolean signupUser(SignupRequestDTO signupRequest) {
         return createUser(signupRequest.getUsername(), signupRequest.getEmail(), signupRequest.getPassword());
+    }
+
+
+    public static User getCurrentAuthenticatedUser() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        return (User) context.getAuthentication().getPrincipal();
     }
 }
