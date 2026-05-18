@@ -1,6 +1,7 @@
 package com.bhavesh.taskflow.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bhavesh.taskflow.dtos.SignupRequest;
@@ -13,10 +14,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     
     public boolean createUser(String username, String email, String password) {
-        validateUserData(username, email, password);
-
+        if(!validateUserData(username, email, password)) {
+            return false;
+        }
         if (userRepository.findByEmail(email).isPresent()) {
             return false;
         }
@@ -24,9 +29,9 @@ public class UserService {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPassword(password);
-
+        user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
+
         return true;
     }
 
