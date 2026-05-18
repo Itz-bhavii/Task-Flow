@@ -1,0 +1,39 @@
+# Build Artifacts
+target/
+build/
+out/
+bin/
+*.jar
+*.war
+*.ear
+
+# IDE Settings (IntelliJ IDEA, Eclipse, VS Code)
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.classpath
+.project
+.factorypath
+.vscode/
+
+# Build Tools (Maven/Gradle)
+.gradle/
+build.log
+.mvn/wrapper/maven-wrapper.jar
+!**/src/**/build/
+
+# Logs and Temporary Files
+*.log
+logs/
+tmp/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Secrets and Local Environment
+.env
+application.properties.local
+application.yml.local
+secrets.yml
