@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bhavesh.taskflow.dtos.LoginRequest;
 import com.bhavesh.taskflow.dtos.SignupRequest;
+import com.bhavesh.taskflow.security.JwtUtility;
 import com.bhavesh.taskflow.services.UserService;
 
 @RestController
@@ -21,6 +22,9 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtility jwtService;
 
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequest signupRequest) {
@@ -35,12 +39,18 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
         try {
+            System.out.println("Attempting login for: " + loginRequest.getEmail());
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
-            return "login-success";
+            System.out.println("Login successful for: " + loginRequest.getEmail());
+            return jwtService.generateToken(loginRequest.getEmail());
         } catch (Exception e) {
+            System.out.println("Login failed for: " + loginRequest.getEmail());
+            System.out.println(e);
             return "login-failed";
         }
     }
+
+    
 }
