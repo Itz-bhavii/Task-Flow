@@ -2,10 +2,10 @@ package com.bhavesh.taskflow.models;
 
 import java.time.LocalDateTime;
 
-
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import com.bhavesh.taskflow.enums.ProjectRole;
+import com.bhavesh.taskflow.enums.TaskStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,41 +18,49 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-    name = "project_members",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "project_id"})
-    }
-)
+@Table(name = "tasks")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectMember {
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private String title;
+
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskStatus status;
+
+    private LocalDateTime dueDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProjectRole role;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
     @CreationTimestamp
-    private LocalDateTime joinedAt;
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
