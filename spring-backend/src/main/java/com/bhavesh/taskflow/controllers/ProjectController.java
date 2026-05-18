@@ -1,11 +1,13 @@
 package com.bhavesh.taskflow.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bhavesh.taskflow.dtos.ProjectAddMemberRequestDTO;
 import com.bhavesh.taskflow.dtos.ProjectRequestDTO;
 import com.bhavesh.taskflow.services.ProjectCreationService;
 
@@ -20,4 +22,10 @@ public class ProjectController {
     public boolean createProject(@RequestBody ProjectRequestDTO projectRequest) {
         return projectCreationService.createProject(projectRequest);
     }
+
+    @PostMapping("/{id}/members")
+    public boolean addMemberToProject(@PathVariable("id") Long projectId, @RequestBody ProjectAddMemberRequestDTO request) {
+        return projectCreationService.addMemberToProject(projectId, request.getEmail());
+    }
+
 }

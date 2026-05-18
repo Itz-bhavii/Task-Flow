@@ -22,7 +22,7 @@ public class ProjectMemberService {
         if(project.getCreatedBy().getId().equals(user.getId())) {
             projectMember.setRole(ProjectRole.ADMIN);
         } else {
-            projectMember.setRole(ProjectRole.USER);
+            projectMember.setRole(ProjectRole.MEMBER);
         }
         return productMemberRepository.save(projectMember) != null;
     }

@@ -19,6 +19,9 @@ public class ProjectService {
         if(projectRequest.getName() == null || projectRequest.getName().trim().length() < 3) {
             return null;
         }
+        if(projectRepository.existsByName(projectRequest.getName())) {
+            return null;
+        }
         return saveProject(projectRequest);
     }
 
@@ -29,6 +32,10 @@ public class ProjectService {
         project.setDescription(projectRequest.getDescription());
         project.setCreatedBy(currentUser);
         return projectRepository.save(project);
+    }
+
+    public Project getProjectById(Long projectId) {
+        return projectRepository.findById(projectId).orElse(null);
     }
     
     

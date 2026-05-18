@@ -7,6 +7,6 @@ import com.bhavesh.taskflow.models.Project;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    
+    public boolean existsByName(String name);
 
 }

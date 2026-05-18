@@ -62,4 +62,8 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.getContext();
         return (User) context.getAuthentication().getPrincipal();
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
 }
