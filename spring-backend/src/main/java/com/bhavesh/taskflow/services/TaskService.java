@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhavesh.taskflow.dtos.TaskRequestDTO;
 import com.bhavesh.taskflow.dtos.TaskResponseDTO;
+import com.bhavesh.taskflow.enums.ProjectRole;
 import com.bhavesh.taskflow.enums.TaskStatus;
 import com.bhavesh.taskflow.models.Project;
 import com.bhavesh.taskflow.models.Task;
@@ -22,6 +23,9 @@ public class TaskService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProjectMemberService projectMemberService;
 
     public boolean createTask(TaskRequestDTO taskRequest, Project project, User assignedTo) {
         Task task = new Task();
@@ -71,6 +75,19 @@ public class TaskService {
         if (task == null) {
             return false;
         }
+        if(!canUserUpdateTask(task)) {
+                return false;
+        }
+
+        ProjectRole userRole = projectMemberService.getUserProjectRole(task.getProject().getId(), UserService.getCurrentAuthenticatedUser().getId());
+
+        if(userRole == ProjectRole.MEMBER && taskrequest.getTaskStatus() != null) {
+            task.setStatus(taskrequest.getTaskStatus());
+            return taskRepository.save(task) != null;
+        } 
+        
+        // Admin can update all fields
+
         if (taskrequest.getTitle() != null) {
             task.setTitle(taskrequest.getTitle());
         }
@@ -88,6 +105,12 @@ public class TaskService {
             task.setAssignedTo(assignedTo);
         }
         return taskRepository.save(task) != null;   
+    }
+
+    private boolean canUserUpdateTask(Task task) {
+        User currentUser = UserService.getCurrentAuthenticatedUser();
+        return task.getCreatedBy().getId().equals(currentUser.getId()) || 
+               (task.getAssignedTo() != null && task.getAssignedTo().getId().equals(currentUser.getId()));
     }
 
     public boolean deleteTask(Long taskId) {

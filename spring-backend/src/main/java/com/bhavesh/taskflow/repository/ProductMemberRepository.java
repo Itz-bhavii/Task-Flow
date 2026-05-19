@@ -9,4 +9,6 @@ import com.bhavesh.taskflow.models.ProjectMember;
 public interface ProductMemberRepository extends JpaRepository<ProjectMember, Long> {
     
     boolean existsByProjectIdAndUserId(Long projectId, Long userId);
+
+    ProjectMember findByProjectIdAndUserId(Long id, Long id2);
 }

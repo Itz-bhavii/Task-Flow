@@ -30,4 +30,9 @@ public class ProjectMemberService {
     public boolean isUserProjectMember(Long projectId, Long userId) {
         return productMemberRepository.existsByProjectIdAndUserId(projectId, userId);
     }
+
+    public ProjectRole getUserProjectRole(Long projectId, Long userId) {
+        ProjectMember projectMember = productMemberRepository.findByProjectIdAndUserId(projectId, userId);
+        return projectMember != null ? projectMember.getRole() : null;
+    }
 }
