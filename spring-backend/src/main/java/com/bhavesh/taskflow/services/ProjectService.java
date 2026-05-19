@@ -28,10 +28,10 @@ public class ProjectService {
 
     public Project createProject(ProjectRequestDTO projectRequest) {
         if(projectRequest.getName() == null || projectRequest.getName().trim().length() < 3) {
-            return null;
+            throw new RuntimeException("Project name must be at least 3 characters long");
         }
         if(projectRepository.existsByName(projectRequest.getName())) {
-            return null;
+            throw new RuntimeException("Project with this name already exists");
         }
         return saveProject(projectRequest);
     }

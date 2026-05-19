@@ -42,7 +42,7 @@ public class TaskService {
 
     public List<TaskResponseDTO> getTasksForProject(Long projectId) {
         if(!projectMemberService.isUserProjectMember(projectId, UserService.getCurrentAuthenticatedUser().getId())) {
-            return null;
+            throw new RuntimeException("You are not a member of this project");
         }
         List<Task> tasks = taskRepository.findByProjectId(projectId);
         List<TaskResponseDTO> taskResponseDTOs = new ArrayList<>();
@@ -56,7 +56,7 @@ public class TaskService {
     public TaskResponseDTO getTaskById(Long taskId) {
         Task task = taskRepository.findById(taskId).orElse(null);
         if (task == null) {
-            return null;
+            throw new RuntimeException("Task not found");
         }   
         return convertTaskToDTO(task);
     }
@@ -77,10 +77,10 @@ public class TaskService {
     public boolean updateTask(Long taskId, TaskRequestDTO taskrequest) {
         Task task = taskRepository.findById(taskId).orElse(null);
         if (task == null) {
-            return false;
+            throw new RuntimeException("Task not found");
         }
         if(!canUserUpdateTask(task)) {
-                return false;
+                throw new RuntimeException("You are not the owner of this task");
         }
 
         ProjectRole userRole = projectMemberService.getUserProjectRole(task.getProject().getId(), UserService.getCurrentAuthenticatedUser().getId());
@@ -126,7 +126,7 @@ public class TaskService {
     public boolean deleteTask(Long taskId) {
 
         if (!taskRepository.existsById(taskId) && !isProjectAdmin(taskRepository.findById(taskId).orElse(null))) {
-            return false;
+            throw new RuntimeException("Task not found or you are not the owner of this task");
         }
         taskRepository.deleteById(taskId);
         return !taskRepository.existsById(taskId);

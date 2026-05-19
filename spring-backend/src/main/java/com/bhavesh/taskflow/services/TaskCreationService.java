@@ -25,7 +25,7 @@ public class TaskCreationService {
 
     public boolean createTask(Long projectId, TaskRequestDTO taskRequest) {
         if (!validityChecks(projectId, taskRequest)) {
-            return false; 
+            throw new RuntimeException("Invalid task creation request");
         }
 
         Project project = projectService.getProjectById(projectId);
@@ -36,21 +36,21 @@ public class TaskCreationService {
 
     public boolean validityChecks(Long projectId, TaskRequestDTO taskRequest) {
         if(!validateTaskInput(taskRequest)) {
-            return false;
+            throw new RuntimeException("Invalid task input");
         }
         if (!projectService.projectExists(projectId)) {
-            return false;
+            throw new RuntimeException("Project not found");
         }
         if(!taskRequest.getAssignedToEmail().isEmpty()){
             if(!userService.userExistsByEmail(taskRequest.getAssignedToEmail())) {
-                return false; 
+                throw new RuntimeException("User not found");
             }
             if(!projectMemberService.isUserProjectMember(projectId, userService.getUserByEmail(taskRequest.getAssignedToEmail()).getId())) {
-                return false;
+                throw new RuntimeException("User is not a member of this project");
             }
         }
         if(!UserService.getCurrentAuthenticatedUser().getId().equals(projectService.getProjectById(projectId).getCreatedBy().getId())) {
-                return false;
+                throw new RuntimeException("You are not the owner of this project");
         }  
         
         
@@ -59,7 +59,7 @@ public class TaskCreationService {
 
     public boolean validateTaskInput(TaskRequestDTO taskRequest) {
         if (taskRequest.getTitle() == null || taskRequest.getTitle().isEmpty()) {
-            return false; 
+            throw new RuntimeException("Task title is required");
         }
         return true; 
     }

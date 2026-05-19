@@ -22,10 +22,10 @@ public class UserService {
     
     public boolean createUser(String username, String email, String password) {
         if(!validateUserData(username, email, password)) {
-            return false;
+            throw new RuntimeException("Invalid user data");
         }
         if (userRepository.findByEmail(email).isPresent()) {
-            return false;
+            throw new RuntimeException("User with this email already exists");
         }
 
         User user = new User();
@@ -39,15 +39,15 @@ public class UserService {
 
     public boolean validateUserData(String username, String email, String password) {
         if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            return false;
+            throw new RuntimeException("Invalid email format");
         }
 
         if(password == null || password.trim().length() < 8){
-            return false;
+            throw new RuntimeException("Password must be at least 8 characters long");
         }
 
         if (username == null || username.trim().length() < 3) {
-            return false;
+            throw new RuntimeException("Username must be at least 3 characters long");
         }
 
         return true;

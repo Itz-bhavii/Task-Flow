@@ -25,33 +25,31 @@ public class ProjectCreationService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private TaskService taskService;
 
     @Transactional
     public boolean createProject(ProjectRequestDTO projectRequest) {
 
         Project project = projectService.createProject(projectRequest);
         if(project == null) {
-            return false;
+            throw new RuntimeException("Project creation failed");
         }
         return projectMemberService.addMemberToProject(project, project.getCreatedBy());
     }
 
     public boolean addMemberToProject(Long projectId, String email) {
         if(email == null || email.trim().length() == 0) {
-            return false;
+            throw new RuntimeException("Email is required");
         }
 
         Project project = projectService.getProjectById(projectId);
 
         if(UserService.getCurrentAuthenticatedUser().getId() != project.getCreatedBy().getId()) {
-                return false;
+            throw new RuntimeException("You are not the owner of this project");
         }
 
         User user = userService.getUserByEmail(email);
         if(user == null || project == null) {
-            return false;
+            throw new RuntimeException("User or Project not found");
         }
         return projectMemberService.addMemberToProject(project, user);
     }
@@ -59,10 +57,10 @@ public class ProjectCreationService {
     public ProjectResponseDTO getProjectDetails(Long projectId) {
         Project project = projectService.getProjectById(projectId);
         if(project == null) {
-            return null;
+            throw new RuntimeException("Project not found");
         }
         if(!projectMemberService.isUserProjectMember(projectId, UserService.getCurrentAuthenticatedUser().getId())) {
-            return null;
+            throw new RuntimeException("You are not a member of this project");
         }
         
         return projectService.convertProjectToDTO(project);
@@ -80,10 +78,10 @@ public class ProjectCreationService {
     public boolean deleteProject(Long projectId) {
         Project project = projectService.getProjectById(projectId);
         if(project == null) {
-            return false;
+            throw new RuntimeException("Project not found");
         }
         if(UserService.getCurrentAuthenticatedUser().getId() != project.getCreatedBy().getId()) {
-            return false;
+            throw new RuntimeException("You are not the owner of this project");
         }
         projectService.deleteProject(projectId);
         return true;
