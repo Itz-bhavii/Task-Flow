@@ -46,6 +46,11 @@ public class ProjectController {
     public ProjectResponseDTO getProjectDetails(@PathVariable("id") Long projectId) {
         return projectCreationService.getProjectDetails(projectId);
     }
+
+    @GetMapping("/my")
+    public List<ProjectResponseDTO> getMyProjects() {
+        return projectCreationService.getMyProjects();
+    }
     
     
     @PostMapping("/{id}/tasks")

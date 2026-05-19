@@ -1,5 +1,7 @@
 package com.bhavesh.taskflow.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,10 @@ public class ProjectService {
         return projectRepository.existsById(projectId);
     }
 
+
+    public List<Project> getProjectsByUserId(Long userId) {
+        return projectRepository.findByCreatedById(userId);
+    }
     
 
     public ProjectResponseDTO convertProjectToDTO(Project project) {

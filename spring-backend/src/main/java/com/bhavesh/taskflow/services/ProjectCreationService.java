@@ -1,5 +1,8 @@
 package com.bhavesh.taskflow.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,5 +63,14 @@ public class ProjectCreationService {
         }
         
         return projectService.convertProjectToDTO(project);
+    }
+
+    public List<ProjectResponseDTO> getMyProjects() {
+        List<Project> projects = projectService.getProjectsByUserId(UserService.getCurrentAuthenticatedUser().getId());
+        List<ProjectResponseDTO> projectDTOs = new ArrayList<>();
+        for(Project project : projects) {
+            projectDTOs.add(projectService.convertProjectToDTO(project));
+        }
+        return projectDTOs;
     }
 }
