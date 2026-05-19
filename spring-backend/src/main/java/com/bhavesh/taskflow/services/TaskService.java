@@ -41,6 +41,9 @@ public class TaskService {
     }
 
     public List<TaskResponseDTO> getTasksForProject(Long projectId) {
+        if(!projectMemberService.isUserProjectMember(projectId, UserService.getCurrentAuthenticatedUser().getId())) {
+            return null;
+        }
         List<Task> tasks = taskRepository.findByProjectId(projectId);
         List<TaskResponseDTO> taskResponseDTOs = new ArrayList<>();
         for (Task task : tasks) {
