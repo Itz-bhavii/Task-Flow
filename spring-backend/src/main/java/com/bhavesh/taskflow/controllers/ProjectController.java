@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bhavesh.taskflow.dtos.ProjectAddMemberRequestDTO;
 import com.bhavesh.taskflow.dtos.ProjectRequestDTO;
+import com.bhavesh.taskflow.dtos.ProjectResponseDTO;
 import com.bhavesh.taskflow.dtos.TaskRequestDTO;
 import com.bhavesh.taskflow.dtos.TaskResponseDTO;
 import com.bhavesh.taskflow.services.ProjectCreationService;
@@ -39,6 +40,11 @@ public class ProjectController {
     @PostMapping("/{id}/members")
     public boolean addMemberToProject(@PathVariable("id") Long projectId, @RequestBody ProjectAddMemberRequestDTO request) {
         return projectCreationService.addMemberToProject(projectId, request.getEmail());
+    }
+
+    @GetMapping("/{id}")
+    public ProjectResponseDTO getProjectDetails(@PathVariable("id") Long projectId) {
+        return projectCreationService.getProjectDetails(projectId);
     }
     
     

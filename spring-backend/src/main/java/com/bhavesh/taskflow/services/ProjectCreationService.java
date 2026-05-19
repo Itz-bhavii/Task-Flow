@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhavesh.taskflow.dtos.ProjectRequestDTO;
+import com.bhavesh.taskflow.dtos.ProjectResponseDTO;
 import com.bhavesh.taskflow.models.Project;
 import com.bhavesh.taskflow.models.User;
 
@@ -47,5 +48,17 @@ public class ProjectCreationService {
             return false;
         }
         return projectMemberService.addMemberToProject(project, user);
+    }
+
+    public ProjectResponseDTO getProjectDetails(Long projectId) {
+        Project project = projectService.getProjectById(projectId);
+        if(project == null) {
+            return null;
+        }
+        if(!projectMemberService.isUserProjectMember(projectId, UserService.getCurrentAuthenticatedUser().getId())) {
+            return null;
+        }
+        
+        return projectService.convertProjectToDTO(project);
     }
 }

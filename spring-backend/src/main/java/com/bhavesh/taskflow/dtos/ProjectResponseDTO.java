@@ -1,0 +1,12 @@
+package com.bhavesh.taskflow.dtos;
+
+import lombok.Data;
+
+@Data
+public class ProjectResponseDTO {
+    private String projectName;
+    private String description;
+    private String createdByUsername;
+    private String createdByEmail;
+
+}

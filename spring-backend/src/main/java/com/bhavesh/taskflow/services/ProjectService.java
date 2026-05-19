@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhavesh.taskflow.dtos.ProjectRequestDTO;
+import com.bhavesh.taskflow.dtos.ProjectResponseDTO;
 import com.bhavesh.taskflow.models.Project;
 import com.bhavesh.taskflow.models.User;
 import com.bhavesh.taskflow.repository.ProjectRepository;
@@ -40,6 +41,17 @@ public class ProjectService {
 
     public boolean projectExists(Long projectId) {
         return projectRepository.existsById(projectId);
+    }
+
+    
+
+    public ProjectResponseDTO convertProjectToDTO(Project project) {
+        ProjectResponseDTO dto = new ProjectResponseDTO();
+        dto.setProjectName(project.getName());
+        dto.setDescription(project.getDescription());
+        dto.setCreatedByUsername(project.getCreatedBy().getName());
+        dto.setCreatedByEmail(project.getCreatedBy().getEmail());
+        return dto;
     }
     
     
