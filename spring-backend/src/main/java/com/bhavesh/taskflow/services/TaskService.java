@@ -113,8 +113,15 @@ public class TaskService {
                (task.getAssignedTo() != null && task.getAssignedTo().getId().equals(currentUser.getId()));
     }
 
+    private boolean isProjectAdmin(Task task) {
+        User currentUser = UserService.getCurrentAuthenticatedUser();
+        ProjectRole role = projectMemberService.getUserProjectRole(task.getProject().getId(), currentUser.getId());
+        return role == ProjectRole.ADMIN;
+    }
+
     public boolean deleteTask(Long taskId) {
-        if (!taskRepository.existsById(taskId)) {
+
+        if (!taskRepository.existsById(taskId) && !isProjectAdmin(taskRepository.findById(taskId).orElse(null))) {
             return false;
         }
         taskRepository.deleteById(taskId);
