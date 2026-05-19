@@ -1,11 +1,15 @@
 package com.bhavesh.taskflow.security;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PostConstruct;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,9 +19,15 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtUtility {
 
-    private final String SECRET = "this-is-a-very-secret-key-for-jwt-signing";
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    @Value("${JWT_SECRET}")
+    private String secret;
+    private SecretKey key;
     private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+
+    @PostConstruct
+    private void initKey() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
 
     public String generateToken(String email){
