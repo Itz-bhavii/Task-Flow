@@ -20,12 +20,15 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private UserService userService;
+
     public boolean createTask(TaskRequestDTO taskRequest, Project project, User assignedTo) {
         Task task = new Task();
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
         task.setDueDate(taskRequest.getDueDate());
-        task.setStatus(TaskStatus.TODO);
+        task.setStatus(taskRequest.getTaskStatus() != null ? taskRequest.getTaskStatus() : TaskStatus.TODO);
         task.setCreatedBy(UserService.getCurrentAuthenticatedUser());
         task.setProject(project);
         task.setAssignedTo(assignedTo);
@@ -61,6 +64,30 @@ public class TaskService {
         dto.setAssignedToUsername(task.getAssignedTo() != null ? task.getAssignedTo().getName() : null);
         dto.setCreatedBy(task.getCreatedBy().getName());
         return dto;
+    }
+
+    public boolean updateTask(Long taskId, TaskRequestDTO taskrequest) {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (task == null) {
+            return false;
+        }
+        if (taskrequest.getTitle() != null) {
+            task.setTitle(taskrequest.getTitle());
+        }
+        if (taskrequest.getDescription() != null) {
+            task.setDescription(taskrequest.getDescription());
+        }
+        if (taskrequest.getDueDate() != null) {
+            task.setDueDate(taskrequest.getDueDate());
+        }
+        if (taskrequest.getTaskStatus() != null) {
+            task.setStatus(taskrequest.getTaskStatus());
+        }
+        if(taskrequest.getAssignedToEmail() != null) {
+            User assignedTo = userService.getUserByEmail(taskrequest.getAssignedToEmail());
+            task.setAssignedTo(assignedTo);
+        }
+        return taskRepository.save(task) != null;   
     }
     
 }
