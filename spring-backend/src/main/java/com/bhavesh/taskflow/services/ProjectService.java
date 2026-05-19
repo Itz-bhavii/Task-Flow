@@ -37,6 +37,10 @@ public class ProjectService {
     public Project getProjectById(Long projectId) {
         return projectRepository.findById(projectId).orElse(null);
     }
+
+    public boolean projectExists(Long projectId) {
+        return projectRepository.existsById(projectId);
+    }
     
     
 }

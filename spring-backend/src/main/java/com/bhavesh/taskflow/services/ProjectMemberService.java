@@ -26,4 +26,8 @@ public class ProjectMemberService {
         }
         return productMemberRepository.save(projectMember) != null;
     }
+
+    public boolean isUserProjectMember(Long projectId, Long userId) {
+        return productMemberRepository.existsByProjectIdAndUserId(projectId, userId);
+    }
 }
