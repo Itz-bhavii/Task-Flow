@@ -1,6 +1,7 @@
 package com.bhavesh.taskflow.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +17,8 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping
-    public DashboardResponseDTO getCurrentUserData(){
-        return dashboardService.getCurrentUserData();
+    public ResponseEntity<DashboardResponseDTO> getCurrentUserData(){
+        return ResponseEntity.ok(dashboardService.getCurrentUserData());
     }
     
 }

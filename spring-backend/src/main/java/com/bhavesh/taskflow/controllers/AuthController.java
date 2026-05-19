@@ -1,6 +1,10 @@
 package com.bhavesh.taskflow.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,28 +31,36 @@ public class AuthController {
     private JwtUtility jwtService;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequestDTO signupRequest) {
-        if(userService.signupUser(signupRequest)) {
-            return "signup-success";
-        } else {
-            return "signup-failed";
+    public ResponseEntity<?> signup( @RequestBody SignupRequestDTO signupRequest) {
+
+        boolean created = userService.signupUser(signupRequest);
+        if (created) {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(Map.of("message","User created successfully"));
         }
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message","Signup failed"));
     }
 
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<?> login( @RequestBody LoginRequestDTO loginRequest) {
         try {
-            System.out.println("Attempting login for: " + loginRequest.getEmail());
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
             );
-            System.out.println("Login successful for: " + loginRequest.getEmail());
-            return jwtService.generateToken(loginRequest.getEmail());
+            String token = jwtService.generateToken(loginRequest.getEmail());
+            return ResponseEntity.ok(Map.of("token",token));
+
         } catch (Exception e) {
-            System.out.println("Login failed for: " + loginRequest.getEmail());
-            System.out.println(e);
-            return "login-failed";
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message","Invalid email or password"));
         }
     }
 
