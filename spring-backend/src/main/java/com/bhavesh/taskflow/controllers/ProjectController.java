@@ -3,6 +3,7 @@ package com.bhavesh.taskflow.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +62,11 @@ public class ProjectController {
     @GetMapping("/{id}/tasks")
     public List<TaskResponseDTO> getTasksForProject(@PathVariable("id") Long projectId) {
         return taskService.getTasksForProject(projectId);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteProject(@PathVariable("id") Long projectId) {
+        return projectCreationService.deleteProject(projectId);
     }
 
 }

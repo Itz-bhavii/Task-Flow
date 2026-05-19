@@ -49,5 +49,10 @@ public class ProjectMemberService {
         return projects;
     }
 
+    public boolean deleteProjectMembersByProjectId(Long projectId) {
+        projectMemberRepository.deleteByProjectId(projectId);
+        return projectMemberRepository.existsByProjectId(projectId);
+    }
+
 
 }

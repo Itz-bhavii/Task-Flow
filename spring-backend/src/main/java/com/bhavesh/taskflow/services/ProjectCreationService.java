@@ -25,6 +25,9 @@ public class ProjectCreationService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TaskService taskService;
+
     @Transactional
     public boolean createProject(ProjectRequestDTO projectRequest) {
 
@@ -72,5 +75,17 @@ public class ProjectCreationService {
             projectDTOs.add(projectService.convertProjectToDTO(project));
         }
         return projectDTOs;
+    }
+
+    public boolean deleteProject(Long projectId) {
+        Project project = projectService.getProjectById(projectId);
+        if(project == null) {
+            return false;
+        }
+        if(UserService.getCurrentAuthenticatedUser().getId() != project.getCreatedBy().getId()) {
+            return false;
+        }
+        projectService.deleteProject(projectId);
+        return true;
     }
 }

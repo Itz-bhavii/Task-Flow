@@ -11,11 +11,19 @@ import com.bhavesh.taskflow.models.Project;
 import com.bhavesh.taskflow.models.User;
 import com.bhavesh.taskflow.repository.ProjectRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private ProjectMemberService projectMemberService;
 
 
     public Project createProject(ProjectRequestDTO projectRequest) {
@@ -58,6 +66,14 @@ public class ProjectService {
         dto.setCreatedByUsername(project.getCreatedBy().getName());
         dto.setCreatedByEmail(project.getCreatedBy().getEmail());
         return dto;
+    }
+
+    @Transactional
+    public boolean deleteProject(Long projectId) {
+        projectMemberService.deleteProjectMembersByProjectId(projectId);
+        taskService.deleteTasksForProjectId(projectId);
+        projectRepository.deleteById(projectId);
+        return projectExists(projectId);
     }
     
     

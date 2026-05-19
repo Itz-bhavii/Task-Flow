@@ -159,5 +159,10 @@ public class TaskService {
         }
         return overdueTasks;
     }
+
+    public boolean deleteTasksForProjectId(Long projectId) {
+        taskRepository.deleteByProjectId(projectId);
+        return taskRepository.existsByProjectId(projectId);
+    }
     
 }
