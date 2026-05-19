@@ -1,5 +1,6 @@
 package com.bhavesh.taskflow.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,6 +127,34 @@ public class TaskService {
         }
         taskRepository.deleteById(taskId);
         return !taskRepository.existsById(taskId);
+    }
+
+    public List<Task> getCurrentUserAssignedTasks(){
+        User currentUser = UserService.getCurrentAuthenticatedUser();
+        return taskRepository.findByAssignedToId(currentUser.getId());  
+    }
+
+    public List<Task> getCurrentUserCompletedTasks(){
+        User currentUser = UserService.getCurrentAuthenticatedUser();
+        return taskRepository.findByAssignedToIdAndStatusIn(currentUser.getId(), List.of(TaskStatus.DONE));
+    }
+
+    public List<Task> getCurrentUserPendingTasks(){
+        User currentUser = UserService.getCurrentAuthenticatedUser();
+        return taskRepository.findByAssignedToIdAndStatusIn(currentUser.getId(), List.of(TaskStatus.IN_PROGRESS,TaskStatus.TODO));
+    }
+
+    public List<Task> getCurrentUserOverdueTasks() {
+        User currentUser = UserService.getCurrentAuthenticatedUser();
+        List<Task> assignedTasks = taskRepository.findByAssignedToId(currentUser.getId());
+        List<Task> overdueTasks = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        for(Task task : assignedTasks) {
+            if(task.getDueDate() != null && task.getDueDate().isBefore(now) && task.getStatus() != TaskStatus.DONE) {
+                overdueTasks.add(task);
+            }
+        }
+        return overdueTasks;
     }
     
 }

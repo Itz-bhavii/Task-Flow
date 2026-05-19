@@ -66,7 +66,7 @@ public class ProjectCreationService {
     }
 
     public List<ProjectResponseDTO> getMyProjects() {
-        List<Project> projects = projectService.getProjectsByUserId(UserService.getCurrentAuthenticatedUser().getId());
+        List<Project> projects = projectMemberService.findProjectsOfCurrentlyLoggedUser();
         List<ProjectResponseDTO> projectDTOs = new ArrayList<>();
         for(Project project : projects) {
             projectDTOs.add(projectService.convertProjectToDTO(project));
