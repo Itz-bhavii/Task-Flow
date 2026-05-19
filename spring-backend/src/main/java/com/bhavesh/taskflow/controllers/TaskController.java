@@ -1,6 +1,7 @@
 package com.bhavesh.taskflow.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,5 +28,10 @@ public class TaskController {
     @PatchMapping("/{id}")
     public boolean updateTask(@PathVariable("id") Long taskId, @RequestBody TaskRequestDTO Taskrequest) {
         return taskService.updateTask(taskId, Taskrequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteTask(@PathVariable("id") Long taskId) {
+        return taskService.deleteTask(taskId);
     }
 }

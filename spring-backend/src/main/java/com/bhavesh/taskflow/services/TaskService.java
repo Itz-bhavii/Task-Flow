@@ -89,5 +89,13 @@ public class TaskService {
         }
         return taskRepository.save(task) != null;   
     }
+
+    public boolean deleteTask(Long taskId) {
+        if (!taskRepository.existsById(taskId)) {
+            return false;
+        }
+        taskRepository.deleteById(taskId);
+        return !taskRepository.existsById(taskId);
+    }
     
 }
