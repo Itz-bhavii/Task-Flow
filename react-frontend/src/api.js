@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'https://task-flow-production-ff0a.up.railway.app',
 });
 
 // Automatically add JWT token to every request if it exists.
