@@ -61,6 +61,7 @@ public class ProjectService {
 
     public ProjectResponseDTO convertProjectToDTO(Project project) {
         ProjectResponseDTO dto = new ProjectResponseDTO();
+        dto.setId(project.getId());
         dto.setProjectName(project.getName());
         dto.setDescription(project.getDescription());
         dto.setCreatedByUsername(project.getCreatedBy().getName());

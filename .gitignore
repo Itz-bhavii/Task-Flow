@@ -37,3 +37,11 @@ Thumbs.db
 application.properties.local
 application.yml.local
 secrets.yml
+
+# react files
+node_modules/
+dist/
+build/
+*.log
+.env
+

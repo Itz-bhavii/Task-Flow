@@ -27,7 +27,11 @@ public class ProjectMemberService {
         } else {
             projectMember.setRole(ProjectRole.MEMBER);
         }
-        return projectMemberRepository.save(projectMember) != null;
+        try{
+            return projectMemberRepository.save(projectMember) != null;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed To add Maybe Member already exists in the project");
+        }
     }
 
     public boolean isUserProjectMember(Long projectId, Long userId) {

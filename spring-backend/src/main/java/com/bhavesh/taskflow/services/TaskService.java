@@ -63,6 +63,7 @@ public class TaskService {
 
     public TaskResponseDTO convertTaskToDTO(Task task) {
         TaskResponseDTO dto = new TaskResponseDTO();
+        dto.setId(task.getId());
         dto.setTaskTitle(task.getTitle());
         dto.setTaskDescription(task.getDescription());
         dto.setTaskStatus(task.getStatus());
@@ -119,8 +120,12 @@ public class TaskService {
 
     private boolean isProjectAdmin(Task task) {
         User currentUser = UserService.getCurrentAuthenticatedUser();
-        ProjectRole role = projectMemberService.getUserProjectRole(task.getProject().getId(), currentUser.getId());
-        return role == ProjectRole.ADMIN;
+        try{
+            ProjectRole role = projectMemberService.getUserProjectRole(task.getProject().getId(), currentUser.getId());
+            return role == ProjectRole.ADMIN;
+        } catch (Exception e) {
+            throw new RuntimeException("Task does not exists or you are not a member of the project");
+        }
     }
 
     public boolean deleteTask(Long taskId) {
@@ -128,7 +133,11 @@ public class TaskService {
         if (!taskRepository.existsById(taskId) && !isProjectAdmin(taskRepository.findById(taskId).orElse(null))) {
             throw new RuntimeException("Task not found or you are not the owner of this task");
         }
-        taskRepository.deleteById(taskId);
+        try {
+            taskRepository.deleteById(taskId);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete task");
+        }
         return !taskRepository.existsById(taskId);
     }
 

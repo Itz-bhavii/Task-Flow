@@ -8,6 +8,7 @@ import lombok.Data;
 
 @Data
 public class TaskResponseDTO {
+    private Long id;
     private String taskTitle;
     private String taskDescription;
     private TaskStatus taskStatus;
