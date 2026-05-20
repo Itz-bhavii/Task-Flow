@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bhavesh.taskflow.dtos.ProjectMemberResponseDTO;
 import com.bhavesh.taskflow.dtos.ProjectRequestDTO;
 import com.bhavesh.taskflow.dtos.ProjectResponseDTO;
 import com.bhavesh.taskflow.models.Project;
@@ -85,5 +86,15 @@ public class ProjectCreationService {
         }
         projectService.deleteProject(projectId);
         return true;
+    }
+
+    public List<ProjectMemberResponseDTO> getProjectMembers(Long projectId) {
+        if(!projectService.projectExists(projectId)) {
+            throw new RuntimeException("Project not found");
+        }
+        if(!projectMemberService.isUserProjectMember(projectId, UserService.getCurrentAuthenticatedUser().getId())) {
+            throw new RuntimeException("You are not a member of this project");
+        }
+        return projectMemberService.getProjectMembers(projectId);
     }
 }

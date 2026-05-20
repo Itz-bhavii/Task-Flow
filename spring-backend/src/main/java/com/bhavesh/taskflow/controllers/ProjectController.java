@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bhavesh.taskflow.dtos.ProjectAddMemberRequestDTO;
+import com.bhavesh.taskflow.dtos.ProjectMemberResponseDTO;
 import com.bhavesh.taskflow.dtos.ProjectRequestDTO;
 import com.bhavesh.taskflow.dtos.ProjectResponseDTO;
 import com.bhavesh.taskflow.dtos.TaskRequestDTO;
@@ -127,4 +128,9 @@ public class ProjectController {
                 .body(Map.of("message","Project deletion failed"));
     }
 
+    @GetMapping("/{id}/members")
+    public ResponseEntity<List<ProjectMemberResponseDTO>> getProjectMembers(@PathVariable("id") Long projectId) {
+        List<ProjectMemberResponseDTO> members = projectCreationService.getProjectMembers(projectId);
+        return ResponseEntity.ok(members);
+    }
 }

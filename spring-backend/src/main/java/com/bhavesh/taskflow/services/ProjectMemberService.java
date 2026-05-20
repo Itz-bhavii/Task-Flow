@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bhavesh.taskflow.dtos.ProjectMemberResponseDTO;
 import com.bhavesh.taskflow.enums.ProjectRole;
 import com.bhavesh.taskflow.models.Project;
 import com.bhavesh.taskflow.models.ProjectMember;
@@ -56,6 +57,19 @@ public class ProjectMemberService {
     public boolean deleteProjectMembersByProjectId(Long projectId) {
         projectMemberRepository.deleteByProjectId(projectId);
         return projectMemberRepository.existsByProjectId(projectId);
+    }
+
+    public List<ProjectMemberResponseDTO> getProjectMembers(Long projectId) {
+        List<ProjectMember> projectMembers = projectMemberRepository.findByProjectId(projectId);
+        List<ProjectMemberResponseDTO> memberResponseDTOs = new ArrayList<>();
+        for (ProjectMember pm : projectMembers) {
+            ProjectMemberResponseDTO dto = new ProjectMemberResponseDTO();
+            dto.setUsername(pm.getUser().getUsername());
+            dto.setEmail(pm.getUser().getEmail());
+            dto.setRole(pm.getRole());
+            memberResponseDTOs.add(dto);
+        }
+        return memberResponseDTOs;
     }
 
 
