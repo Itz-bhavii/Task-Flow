@@ -16,6 +16,7 @@ export default function ProjectDetails() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -54,12 +55,14 @@ export default function ProjectDetails() {
     setLoading(true);
     setError('');
     try {
-      const [projectResponse, taskResponse] = await Promise.all([
+      const [projectResponse, taskResponse, membersResponse] = await Promise.all([
         api.get(`/projects/${id}`),
         api.get(`/projects/${id}/tasks`),
+        api.get(`/projects/${id}/members`),
       ]);
       setProject(projectResponse.data);
       setTasks(taskResponse.data);
+      setMembers(membersResponse.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load project');
     } finally {
@@ -77,6 +80,7 @@ export default function ProjectDetails() {
     try {
       await api.post(`/projects/${id}/members`, { email: memberEmail });
       setMemberEmail('');
+      loadProject();
     } catch (err) {
       setMemberErrors({
         email: err.response?.data?.message || 'Failed to add member',
@@ -224,6 +228,23 @@ export default function ProjectDetails() {
             </label>
             <button type="submit">Add Member</button>
           </form>
+        </div>
+
+        <div className="card">
+          <h3>Members</h3>
+          {members.length === 0 ? (
+            <p className="muted">No members found.</p>
+          ) : (
+            members.map((member, index) => (
+              <div className="task-row" key={`${member.email}-${index}`}>
+                <div>
+                  <strong>{member.username || 'Unknown user'}</strong>
+                  <p className="muted">{member.email}</p>
+                  <p className="muted">Role: {member.role}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         <div className="card">

@@ -64,7 +64,7 @@ public class ProjectMemberService {
         List<ProjectMemberResponseDTO> memberResponseDTOs = new ArrayList<>();
         for (ProjectMember pm : projectMembers) {
             ProjectMemberResponseDTO dto = new ProjectMemberResponseDTO();
-            dto.setUsername(pm.getUser().getUsername());
+            dto.setUsername(pm.getUser().getName());
             dto.setEmail(pm.getUser().getEmail());
             dto.setRole(pm.getRole());
             memberResponseDTOs.add(dto);
